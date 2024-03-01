@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1affdb9de6c07847ae7818390459823, type: 3}
   m_Name: PlayerMovementData
   m_EditorClassIdentifier: 
-  movementSpeed: 7
-  acceleration: 7
-  deceleration: 1
-  accelerationInAir: 1.1
-  decelerationInAir: 1.1
+  movementSpeed: 10
+  acceleration: 5
+  deceleration: 5
+  accelerationInAir: 0.5
+  decelerationInAir: 0.5
   velPower: 0.9
   jumpForce: 10
-  jumpInputBufferTime: 1
-  coyoteTimeBuffer: 1
+  jumpInputBufferTime: 0.3
+  coyoteTimeBuffer: 0.2
   jumpHangTimeThreshold: 1
   jumpHangAccelerationMult: 1
   jumpHangMaxSpeedMult: 1
-  gravityScale: 1
-  gravityScaleWhenFalling: 2
+  gravityScaleWhenJumping: 1
+  gravityScaleWhenFalling: 1.8

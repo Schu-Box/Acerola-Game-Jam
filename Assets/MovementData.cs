@@ -25,7 +25,7 @@ public class MovementData : ScriptableObject
 	public float jumpHangMaxSpeedMult = 1f;
 
 	[Header("Gravity")]
-	public float gravityScale = 1f;
+	public float gravityScaleWhenJumping = 1f;
 	public float gravityScaleWhenFalling = 2f;
 	// public float fastFallGravityMult = 2f;
 	// public float maxFastFallSpeed = 10;

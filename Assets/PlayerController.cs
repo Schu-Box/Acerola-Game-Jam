@@ -59,6 +59,10 @@ public class PlayerController : MonoBehaviour
             {
                 Ungrounded();
             }
+            else
+            {
+                lastOnGroundTime = movementData.coyoteTimeBuffer;
+            }
         }
 
         if (isJumping && rb.velocity.y < 0) //Reached peak of jump
@@ -94,7 +98,7 @@ public class PlayerController : MonoBehaviour
         {
             if (rb.gravityScale != movementData.gravityScaleWhenFalling)
             {
-                SetGravityScale(movementData.gravityScale * movementData.gravityScaleWhenFalling);
+                SetGravityScale(movementData.gravityScaleWhenFalling);
             }
             // SetGravityScale(movementData.gravityScale * movementData.fallGravityMult);
             // rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -movementData.maxFallSpeed));
@@ -116,11 +120,6 @@ public class PlayerController : MonoBehaviour
         isJumpCut = false;
 
         lastOnGroundTime = movementData.coyoteTimeBuffer;
-
-        if (rb.gravityScale != movementData.gravityScale)
-        {
-            SetGravityScale(movementData.gravityScale);
-        }
     }
 
     private void Ungrounded()
@@ -176,9 +175,12 @@ public class PlayerController : MonoBehaviour
         
         rb.AddForce(Vector3.up * force, ForceMode2D.Impulse);
 
-        if (!Input.GetKeyDown(KeyCode.Space)) //If the player isn't currently holding down the space bar, then jump is already cut
+        if (Input.GetKey(KeyCode.Space)) //If the player is holding space bar, set their gravity to the normal scale
         {
-            isJumpCut = true;
+            if (rb.gravityScale != movementData.gravityScaleWhenJumping)
+            {
+                SetGravityScale(movementData.gravityScaleWhenJumping);
+            }
         }
     }
 
