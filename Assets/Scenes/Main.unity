@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 139787927}
   - component: {fileID: 139787926}
   m_Layer: 6
-  m_Name: Ground (1)
+  m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -327,6 +327,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 645670604}
+  - component: {fileID: 645670605}
   m_Layer: 0
   m_Name: BrickSpawner
   m_TagString: Untagged
@@ -349,6 +350,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &645670605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 645670602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc59223301af21b45aa020e4de37509d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  brickParent: {fileID: 645670604}
+  brickPrefab: {fileID: 3096369346618907066, guid: 1d318cd74db482540a29a3246b083752, type: 3}
+  timeBetweenSpawns: 2
 --- !u!1 &686476631
 GameObject:
   m_ObjectHideFlags: 0
@@ -373,12 +389,43 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 686476631}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.572, z: 0}
+  m_LocalPosition: {x: 0, y: -0.53, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1922911191}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &782696941
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 782696942}
+  m_Layer: 0
+  m_Name: BonkCheckPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &782696942
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 782696941}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.53, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1922911191}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &817603019
 GameObject:
@@ -520,9 +567,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3497d1170c0c28d4b83787dbf7ded72a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  brickParent: {fileID: 645670604}
-  brickPrefab: {fileID: 3096369346618907066, guid: 1d318cd74db482540a29a3246b083752, type: 3}
-  timeBetweenSpawns: 2
 --- !u!4 &904534974
 Transform:
   m_ObjectHideFlags: 0
@@ -550,7 +594,7 @@ GameObject:
   - component: {fileID: 1625585701}
   - component: {fileID: 1625585700}
   m_Layer: 6
-  m_Name: Ground (2)
+  m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -664,7 +708,7 @@ GameObject:
   - component: {fileID: 1922911192}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -682,7 +726,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementData: {fileID: 11400000, guid: c13cd5a50eea0ca48ab1ca2166428b0e, type: 2}
+  bonkCheckPoint: {fileID: 782696942}
   groundCheckPoint: {fileID: 686476632}
+  groundCheckSize: {x: 0.5, y: 0.05}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -751,6 +797,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 686476632}
+  - {fileID: 782696942}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

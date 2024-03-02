@@ -18,11 +18,11 @@ MonoBehaviour:
   accelerationInAir: 0.5
   decelerationInAir: 0.5
   velPower: 0.9
-  jumpForce: 10
+  jumpForce: 12
   jumpInputBufferTime: 0.3
   coyoteTimeBuffer: 0.2
   jumpHangTimeThreshold: 1
   jumpHangAccelerationMult: 1
   jumpHangMaxSpeedMult: 1
   gravityScaleWhenJumping: 1
-  gravityScaleWhenFalling: 1.8
+  gravityScaleWhenFalling: 2

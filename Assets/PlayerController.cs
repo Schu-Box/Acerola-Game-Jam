@@ -7,9 +7,11 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public MovementData movementData;
+
+    public Transform bonkCheckPoint;
     
     public Transform groundCheckPoint;
-    private Vector2 groundCheckSize = new Vector2(0.5f, 0.05f);
+    [HideInInspector] public Vector2 groundCheckSize = new Vector2(1f, 0.05f);
     public LayerMask groundLayer;
     
     private Rigidbody2D rb;
@@ -107,14 +109,14 @@ public class PlayerController : MonoBehaviour
 
     private void SetGravityScale(float newGravityScale)
     {
-        Debug.Log("Gravity now " + newGravityScale);
+        // Debug.Log("Gravity now " + newGravityScale);
         
         rb.gravityScale = newGravityScale;
     }
 
     private void Grounded()
     {
-        Debug.Log("Grounded");
+        // Debug.Log("Grounded");
         
         isGrounded = true;
         isJumpCut = false;
@@ -124,7 +126,7 @@ public class PlayerController : MonoBehaviour
 
     private void Ungrounded()
     {
-        Debug.Log("Ungrounded");
+        // Debug.Log("Ungrounded");
         
         isGrounded = false;
     }
@@ -141,7 +143,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnJumpInput()
     {
-        Debug.Log("jump input");
+        // Debug.Log("jump input");
         
         lastPressedJumpTime = movementData.jumpInputBufferTime;
     }
@@ -150,7 +152,7 @@ public class PlayerController : MonoBehaviour
     {
         if (CanJumpCut())
         {
-            Debug.Log("Jump is cut");
+            // Debug.Log("Jump is cut");
         
             isJumpCut = true;
         }
@@ -158,7 +160,7 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
-        Debug.Log("JUMP");
+        // Debug.Log("JUMP");
         
         isJumping = true;
         isJumpCut = false;
@@ -214,5 +216,12 @@ public class PlayerController : MonoBehaviour
         float movement = Mathf.Pow(Mathf.Abs(speedDif) * accelerationRate, movementData.velPower) * Mathf.Sign(speedDif);
 
         rb.AddForce(movement * Vector2.right);
+    }
+
+    public void Bonked()
+    {
+        Debug.Log("BONKED");
+
+        Destroy(gameObject);
     }
 }

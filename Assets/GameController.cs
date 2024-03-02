@@ -1,34 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    public Transform brickParent;
-    public GameObject brickPrefab;
-
-    private float spawnWidth = 18f;
-    public float timeBetweenSpawns = 2f;
-    private float timer = 0f;
-
-    void Start()
-    {
-        timer = timeBetweenSpawns;
-    }
-    
     void Update()
     {
-        timer -= Time.deltaTime;
-        if(timer <= 0)
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            SpawnNewBrick();
-            timer = timeBetweenSpawns;
+            Restart();
         }
     }
 
-    private void SpawnNewBrick()
+    private void Restart()
     {
-        Vector3 randomPoint = new Vector3(Random.Range(-spawnWidth, spawnWidth), brickParent.transform.position.y, 0);
-        GameObject newBrick = Instantiate(brickPrefab, randomPoint, Quaternion.identity, brickParent);
+        SceneManager.LoadScene(0);
     }
 }
