@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class BrickSpawner : MonoBehaviour
 {
+    public static BrickSpawner Instance;
+    
     public Transform brickParent;
     public GameObject brickPrefab;
 
-    private float spawnWidth = 18f;
+    public float spawnWidth = 17f;
     public float timeBetweenSpawns = 2f;
     private float timer = 0f;
+
+    public float brickGravityScale = 1f;
     
     void Start()
     {
+        Instance = this;
+        
         timer = timeBetweenSpawns;
     }
     
@@ -29,6 +35,8 @@ public class BrickSpawner : MonoBehaviour
     private void SpawnNewBrick()
     {
         Vector3 randomPoint = new Vector3(Random.Range(-spawnWidth, spawnWidth), brickParent.transform.position.y, 0);
-        GameObject newBrick = Instantiate(brickPrefab, randomPoint, Quaternion.identity, brickParent);
+        Brick newBrick = Instantiate(brickPrefab, randomPoint, Quaternion.identity, brickParent).GetComponent<Brick>();
+
+        newBrick.Setup();
     }
 }

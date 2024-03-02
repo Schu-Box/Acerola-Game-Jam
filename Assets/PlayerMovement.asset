@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1affdb9de6c07847ae7818390459823, type: 3}
-  m_Name: PlayerMovementData
+  m_Name: PlayerMovement
   m_EditorClassIdentifier: 
   movementSpeed: 10
   acceleration: 5
@@ -26,3 +26,6 @@ MonoBehaviour:
   jumpHangMaxSpeedMult: 1.3
   gravityScaleWhenJumping: 1
   gravityScaleWhenFalling: 2
+  diveStartSpeedIncrease: 15
+  diveSpeedGainedPerSecond: 50
+  maxDiveSpeed: 40

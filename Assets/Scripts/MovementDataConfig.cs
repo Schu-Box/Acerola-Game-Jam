@@ -1,7 +1,7 @@
 ﻿﻿using UnityEngine;
 
-[CreateAssetMenu(menuName = "Movement Data")] //Create a new playerData object by right clicking in the Project Menu then Create/Player/Player Data and drag onto the player
-public class MovementData : ScriptableObject
+[CreateAssetMenu(menuName = "Movement Data Config")]
+public class MovementDataConfig : ScriptableObject
 {
 	[Header("Run")]
 	public float movementSpeed = 10f;
@@ -126,3 +126,57 @@ public class MovementData : ScriptableObject
 	// 	#endregion
 	// }
 }
+
+ public class MovementData
+ {
+	 public float movementSpeed;
+	 //Acel/Decel should be between 0 and movementSpeed
+	 public float acceleration;
+	 public float deceleration;
+
+	 public float accelerationInAir;
+	 public float decelerationInAir;
+    
+	 public float velPower;
+	
+	 [Header("Jump")]
+	 public float jumpForce;
+	
+	 public float jumpInputBufferTime;
+	 public float coyoteTimeBuffer;
+
+	 public float jumpHangTimeThreshold;
+	 public float jumpHangAccelerationMult;
+	 public float jumpHangMaxSpeedMult;
+
+	 [Header("Gravity")]
+	 public float gravityScaleWhenJumping;
+	 public float gravityScaleWhenFalling;
+	 // public float gravityScaleWhenDiving = 3f;
+
+	 [Header("Diving")]
+	 public float diveStartSpeedIncrease;
+	 public float diveSpeedGainedPerSecond;
+	 public float maxDiveSpeed;
+	 
+	 public MovementData(MovementDataConfig config)
+	 {
+		 movementSpeed = config.movementSpeed;
+		 acceleration = config.acceleration;
+		 deceleration = config.deceleration;
+		 accelerationInAir = config.accelerationInAir;
+		 decelerationInAir = config.decelerationInAir;
+		 velPower = config.velPower;
+		 jumpForce = config.jumpForce;
+		 jumpInputBufferTime = config.jumpInputBufferTime;
+		 coyoteTimeBuffer = config.coyoteTimeBuffer;
+		 jumpHangTimeThreshold = config.jumpHangTimeThreshold;
+		 jumpHangAccelerationMult = config.jumpHangAccelerationMult;
+		 jumpHangMaxSpeedMult = config.jumpHangMaxSpeedMult;
+		 gravityScaleWhenJumping = config.gravityScaleWhenJumping;
+		 gravityScaleWhenFalling = config.gravityScaleWhenFalling;
+		 diveStartSpeedIncrease = config.diveStartSpeedIncrease;
+		 diveSpeedGainedPerSecond = config.diveSpeedGainedPerSecond;
+		 maxDiveSpeed = config.maxDiveSpeed;
+	 }
+ }

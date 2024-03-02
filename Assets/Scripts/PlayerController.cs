@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController Instance;
+    
+    public MovementDataConfig movementDataConfig;
     public MovementData movementData;
 
     public Transform bonkCheckPoint;
@@ -23,14 +26,19 @@ public class PlayerController : MonoBehaviour
 
     private bool isDiving = false;
     
-    //Jumping
+    //Timers
     private float lastPressedJumpTime = 0f;
-
     private float lastOnGroundTime = 0f;
 
-    void Start()
+    public Vector3 lastVelocity;
+    
+    private void Awake()
     {
+        Instance = this;
+        
         rb = GetComponent<Rigidbody2D>();
+        
+        movementData = new MovementData(movementDataConfig);
     }
     
     void Update()
@@ -105,6 +113,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        lastVelocity = rb.velocity;
+    }
+
     private void SetGravityScale(float newGravityScale)
     {
         // Debug.Log("Gravity now " + newGravityScale);
@@ -162,7 +175,7 @@ public class PlayerController : MonoBehaviour
     {
         if (CanDive())
         {
-            Debug.Log("DIVING");
+            // Debug.Log("DIVING");
         
             isDiving = true;
             
@@ -248,5 +261,36 @@ public class PlayerController : MonoBehaviour
         Debug.Log("BONKED");
 
         Destroy(gameObject);
+
+        GameController.Instance.GameOver();
     }
+    
+    #region Experience
+
+    private int experience = 0;
+
+    private int experienceRequiredToLevelUp = 5;
+
+    public float experienceIncreaseRatePerLevel = 1.5f;
+
+    public void AddExperience(int amount)
+    {
+        experience += amount;
+        
+        GameController.Instance.UpdateExperienceUI(experience);
+        
+        if(experience >= experienceRequiredToLevelUp)
+        {
+            LevelUp();
+        }
+    }
+
+    public void LevelUp()
+    {
+        experienceRequiredToLevelUp = (int)(experienceRequiredToLevelUp * experienceIncreaseRatePerLevel);
+        
+        GameController.Instance.DisplayLevelUp();
+    }
+
+    #endregion
 }
