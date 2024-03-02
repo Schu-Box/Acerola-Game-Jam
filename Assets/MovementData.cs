@@ -27,6 +27,17 @@ public class MovementData : ScriptableObject
 	[Header("Gravity")]
 	public float gravityScaleWhenJumping = 1f;
 	public float gravityScaleWhenFalling = 2f;
+	// public float gravityScaleWhenDiving = 3f;
+
+	[Header("Diving")]
+	public float diveStartSpeedIncrease = 10f;
+	public float diveSpeedGainedPerSecond = 15f;
+	public float maxDiveSpeed = 30f;
+
+
+
+
+
 	// public float fastFallGravityMult = 2f;
 	// public float maxFastFallSpeed = 10;
 	//

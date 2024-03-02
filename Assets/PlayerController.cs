@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour
     private bool isJumping = false;
     private bool isJumpCut = false;
     private bool isJumpFalling = false;
+
+    private bool isDiving = false;
     
     //Jumping
     private float lastPressedJumpTime = 0f;
@@ -37,14 +39,19 @@ public class PlayerController : MonoBehaviour
         lastOnGroundTime -= Time.deltaTime;
         
         #region Inputs
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             OnJumpInput();
         }
 
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.UpArrow))
         {
             OnJumpInputUp();
+        }
+
+        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            OnDiveInput();
         }
         #endregion
 
@@ -67,19 +74,9 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (isJumping && rb.velocity.y < 0) //Reached peak of jump
+        if (isJumping && rb.velocity.y < 0) //Reached peak of jump, no longer considered jumping
         {
             isJumping = false;
-        }
-
-        if (lastOnGroundTime > 0 && !isJumping) 
-        {
-            isJumpCut = false;
-        
-            if (!isJumping)
-            {
-                isJumpFalling = false;
-            }
         }
 
         if (CanJump() && lastPressedJumpTime > 0)
@@ -88,22 +85,23 @@ public class PlayerController : MonoBehaviour
         }
 
         Run();
-        
-        //if we want to add a fast fall when player presses down
-        // if (rb.velocity.y < 0 && moveInput.y < 0)
-        // {
-        //     SetGravityScale(movementData.gravityScale * movementData.fastFallGravityMult);
-        //     rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -movementData.maxFastFallSpeed));
-        // }
 
-        if (isJumpCut || rb.velocity.y < 0f) //If we're falling or stopped holding jump
+        if (isJumpCut || rb.velocity.y < 0f && !isJumpFalling) //If we've reached peak of jump or cut the jump, we've started falling
         {
+            isJumpFalling = true;
+            
             if (rb.gravityScale != movementData.gravityScaleWhenFalling)
             {
                 SetGravityScale(movementData.gravityScaleWhenFalling);
             }
-            // SetGravityScale(movementData.gravityScale * movementData.fallGravityMult);
-            // rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -movementData.maxFallSpeed));
+        }
+        
+        if (isDiving)
+        {
+            Vector3 newVelocity = rb.velocity;
+            newVelocity.y -= movementData.diveSpeedGainedPerSecond * Time.deltaTime;
+            newVelocity.y = Mathf.Clamp(newVelocity.y, -movementData.maxDiveSpeed, movementData.maxDiveSpeed);
+            rb.velocity = newVelocity;
         }
     }
 
@@ -120,6 +118,8 @@ public class PlayerController : MonoBehaviour
         
         isGrounded = true;
         isJumpCut = false;
+        isJumpFalling = false;
+        isDiving = false;
 
         lastOnGroundTime = movementData.coyoteTimeBuffer;
     }
@@ -158,6 +158,30 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnDiveInput()
+    {
+        if (CanDive())
+        {
+            Debug.Log("DIVING");
+        
+            isDiving = true;
+            
+            Vector3 newVelocity = rb.velocity;
+            newVelocity.y = -movementData.diveStartSpeedIncrease;
+            rb.velocity = newVelocity;
+        }
+    }
+
+    private bool CanDive()
+    {
+        if (isJumping || isJumpFalling && !isDiving)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     private void Jump()
     {
         // Debug.Log("JUMP");
@@ -165,6 +189,7 @@ public class PlayerController : MonoBehaviour
         isJumping = true;
         isJumpCut = false;
         isJumpFalling = false;
+        isDiving = false;
 
         lastPressedJumpTime = 0f;
         lastOnGroundTime = 0f;
@@ -177,7 +202,7 @@ public class PlayerController : MonoBehaviour
         
         rb.AddForce(Vector3.up * force, ForceMode2D.Impulse);
 
-        if (Input.GetKey(KeyCode.Space)) //If the player is holding space bar, set their gravity to the normal scale
+        if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) //If the player is holding space bar, set their gravity to the normal scale
         {
             if (rb.gravityScale != movementData.gravityScaleWhenJumping)
             {

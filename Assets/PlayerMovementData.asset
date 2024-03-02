@@ -21,8 +21,8 @@ MonoBehaviour:
   jumpForce: 12
   jumpInputBufferTime: 0.3
   coyoteTimeBuffer: 0.2
-  jumpHangTimeThreshold: 1
-  jumpHangAccelerationMult: 1
-  jumpHangMaxSpeedMult: 1
+  jumpHangTimeThreshold: 0.5
+  jumpHangAccelerationMult: 1.2
+  jumpHangMaxSpeedMult: 1.3
   gravityScaleWhenJumping: 1
   gravityScaleWhenFalling: 2
