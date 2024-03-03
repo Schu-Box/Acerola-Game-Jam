@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
     
     //Timers
     private float lastPressedJumpTime = 0f;
+    private float lastPressedDashTime = 0f;
     private float lastOnGroundTime = 0f;
 
     public Vector3 lastVelocity;
@@ -52,6 +53,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         lastPressedJumpTime -= Time.deltaTime;
+        lastPressedDashTime -= Time.deltaTime;
         lastOnGroundTime -= Time.deltaTime;
         
         #region Inputs
@@ -68,6 +70,11 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             OnDiveInput();
+        }
+        
+        if(Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            OnDashInput();
         }
         #endregion
 
@@ -98,6 +105,11 @@ public class PlayerController : MonoBehaviour
         if (CanJump() && lastPressedJumpTime > 0)
         {
             Jump();
+        }
+
+        if (CanDash() && lastPressedDashTime > 0)
+        {
+            Dash();
         }
 
         Run();
@@ -173,8 +185,6 @@ public class PlayerController : MonoBehaviour
 
     private void OnJumpInput()
     {
-        // Debug.Log("jump input");
-        
         lastPressedJumpTime = movementData.jumpInputBufferTime;
     }
 
@@ -271,6 +281,32 @@ public class PlayerController : MonoBehaviour
         float movement = Mathf.Pow(Mathf.Abs(speedDif) * accelerationRate, movementData.velPower) * Mathf.Sign(speedDif);
 
         rb.AddForce(movement * Vector2.right);
+    }
+
+    private void OnDashInput()
+    {
+        lastPressedDashTime = movementData.jumpInputBufferTime;
+    }
+
+    private bool CanDash()
+    {
+        return isGrounded; //Must be grounded to dash
+    }
+
+    private void Dash()
+    {
+        bool dashingLeft = true;
+
+        float dashForce = 10f;
+        
+        if (dashingLeft)
+        {
+            rb.AddForce(Vector2.left * dashForce, ForceMode2D.Impulse);
+        }
+        else
+        {
+            rb.AddForce(Vector2.right * dashForce, ForceMode2D.Impulse);
+        }
     }
 
     public void Bonked()
