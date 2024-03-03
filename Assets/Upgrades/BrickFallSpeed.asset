@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BrickFallSpeed
   m_EditorClassIdentifier: 
   title: 
-  description: Increase Brick Fall Speed by 50%
+  description: Increase Brick Fall Speed
   upgradeEffect:
     type: 1010
-    value: 1.5
+    value: 1.2

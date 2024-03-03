@@ -29,3 +29,4 @@ MonoBehaviour:
   diveStartSpeedIncrease: 15
   diveSpeedGainedPerSecond: 50
   maxDiveSpeed: 40
+  velocityRequiredForSquashing: 30

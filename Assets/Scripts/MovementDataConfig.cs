@@ -34,7 +34,8 @@ public class MovementDataConfig : ScriptableObject
 	public float diveSpeedGainedPerSecond = 15f;
 	public float maxDiveSpeed = 30f;
 
-
+	[Header("Squashing")]
+	public float velocityRequiredForSquashing = 30f;
 
 
 
@@ -158,6 +159,8 @@ public class MovementDataConfig : ScriptableObject
 	 public float diveStartSpeedIncrease;
 	 public float diveSpeedGainedPerSecond;
 	 public float maxDiveSpeed;
+
+	 public float velocityRequiredForSquashing;
 	 
 	 public MovementData(MovementDataConfig config)
 	 {
@@ -178,5 +181,7 @@ public class MovementDataConfig : ScriptableObject
 		 diveStartSpeedIncrease = config.diveStartSpeedIncrease;
 		 diveSpeedGainedPerSecond = config.diveSpeedGainedPerSecond;
 		 maxDiveSpeed = config.maxDiveSpeed;
+		 
+		 velocityRequiredForSquashing = config.velocityRequiredForSquashing;
 	 }
  }

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BrickSpawnRate
   m_EditorClassIdentifier: 
   title: 
-  description: Increase Brick Spawn Rate by 50%
+  description: Increase Brick Spawn Rate
   upgradeEffect:
     type: 1000
-    value: 1.5
+    value: 1.2

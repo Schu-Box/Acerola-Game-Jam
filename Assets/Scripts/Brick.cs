@@ -6,7 +6,6 @@ using UnityEngine;
 public class Brick : MonoBehaviour
 {
     private float velocityRequiredForBonking = 3f;
-    private float velocityRequiredForSquashing = -30f;
 
     private Rigidbody2D rb;
 
@@ -52,7 +51,7 @@ public class Brick : MonoBehaviour
             {
                 // Debug.Log("player velocity is: " + playerController.lastVelocity.y);
                 
-                if(playerController.lastVelocity.y < velocityRequiredForSquashing)
+                if(-playerController.lastVelocity.y >= playerController.movementData.velocityRequiredForSquashing)
                 {
                     // Debug.Log("Squashed at velocity : " + playerController.lastVelocity.y);
                     

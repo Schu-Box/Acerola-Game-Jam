@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1369fbee5c7ff4649abd6ffd9b76a4eb, type: 3}
   m_Name: JumpHeight
   m_EditorClassIdentifier: 
-  title: Jump Height
-  description: Increase Jump Height by 50%
+  title: 
+  description: Increase Jump Height
   upgradeEffect:
     type: 10
-    value: 1.5
+    value: 1.2

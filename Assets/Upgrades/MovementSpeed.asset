@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1369fbee5c7ff4649abd6ffd9b76a4eb, type: 3}
   m_Name: MovementSpeed
   m_EditorClassIdentifier: 
-  title: Movement Speed
-  description: Increase Movement Speed by 50%
+  title: 
+  description: Increase Movement Speed
   upgradeEffect:
     type: 20
-    value: 1.5
+    value: 1.2

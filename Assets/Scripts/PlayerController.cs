@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,6 +17,9 @@ public class PlayerController : MonoBehaviour
     public Transform groundCheckPoint;
     [HideInInspector] public Vector2 groundCheckSize = new Vector2(1f, 0.05f);
     public LayerMask groundLayer;
+
+    [Header("Particles")]
+    public ParticleSystem canSquashParticles;
     
     private Rigidbody2D rb;
 
@@ -25,6 +29,8 @@ public class PlayerController : MonoBehaviour
     private bool isJumpFalling = false;
 
     private bool isDiving = false;
+
+    private bool canSquash = false;
     
     //Timers
     private float lastPressedJumpTime = 0f;
@@ -39,6 +45,8 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         
         movementData = new MovementData(movementDataConfig);
+        
+        ToggleCanSquashParticles(false);
     }
     
     void Update()
@@ -110,6 +118,15 @@ public class PlayerController : MonoBehaviour
             newVelocity.y -= movementData.diveSpeedGainedPerSecond * Time.deltaTime;
             newVelocity.y = Mathf.Clamp(newVelocity.y, -movementData.maxDiveSpeed, movementData.maxDiveSpeed);
             rb.velocity = newVelocity;
+        }
+
+        if (!canSquash && -rb.velocity.y >= movementData.velocityRequiredForSquashing)
+        {
+            ToggleCanSquashParticles(true);
+        } 
+        else if (canSquash && -rb.velocity.y < movementData.velocityRequiredForSquashing)
+        {
+            ToggleCanSquashParticles(false);
         }
     }
 
@@ -263,6 +280,20 @@ public class PlayerController : MonoBehaviour
         Destroy(gameObject);
 
         GameController.Instance.GameOver();
+    }
+
+    public void ToggleCanSquashParticles(bool canNowSquash)
+    {
+        canSquash = canNowSquash;
+        
+        if (canNowSquash)
+        {
+            canSquashParticles.Play();
+        }
+        else
+        {
+            canSquashParticles.Stop();
+        }
     }
     
     #region Experience
