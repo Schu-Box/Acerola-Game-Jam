@@ -23,12 +23,15 @@ public class PlayerController : MonoBehaviour
     
     private Rigidbody2D rb;
 
+    private bool isFacingRight = true;
+
     private bool isGrounded = false;
     private bool isJumping = false;
     private bool isJumpCut = false;
     private bool isJumpFalling = false;
 
     private bool isDiving = false;
+    private bool isDashing = false;
 
     private bool canSquash = false;
     
@@ -57,25 +60,23 @@ public class PlayerController : MonoBehaviour
         lastOnGroundTime -= Time.deltaTime;
         
         #region Inputs
+        float horizontalInput = Input.GetAxis("Horizontal");
+        
+        if (horizontalInput != 0)
+            CheckDirectionToFace(horizontalInput > 0);
+
         if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
-        {
             OnJumpInput();
-        }
 
         if (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.UpArrow))
-        {
             OnJumpInputUp();
-        }
+        
 
         if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
-        {
             OnDiveInput();
-        }
         
         if(Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftShift))
-        {
             OnDashInput();
-        }
         #endregion
 
         if (!isJumping && !isGrounded) //If they aren't jumping and they aren't grounded, check if they've now become grounded
@@ -109,10 +110,24 @@ public class PlayerController : MonoBehaviour
 
         if (CanDash() && lastPressedDashTime > 0)
         {
-            Dash();
+            //Freeze game for split second. Adds juiciness and a bit of forgiveness over directional input
+            // Sleep(Data.dashSleepTime); 
+
+            Vector2 dashDirection = Vector2.left;
+        
+            //If not direction pressed, dash forward
+            if (horizontalInput != 0f)
+                dashDirection = horizontalInput > 0f ? Vector2.right : Vector2.left;
+            else
+                dashDirection = isFacingRight ? Vector2.right : Vector2.left;
+
+            StartCoroutine(StartDash(dashDirection));
         }
 
-        Run();
+        if (CanRun())
+        {
+            Run(horizontalInput);
+        }
 
         if (isJumpCut || rb.velocity.y < 0f && !isJumpFalling) //If we've reached peak of jump or cut the jump, we've started falling
         {
@@ -251,10 +266,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Run()
+    private bool CanRun()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
+        if(isDashing)
+            return false;
 
+        return true;
+    }
+
+    private void Run(float horizontalInput)
+    {
         float targetSpeed = horizontalInput * movementData.movementSpeed;
 
         float accelerationRate;
@@ -283,6 +304,21 @@ public class PlayerController : MonoBehaviour
         rb.AddForce(movement * Vector2.right);
     }
 
+    private void CheckDirectionToFace(bool isMovingRight)
+    {
+        if (isMovingRight != isFacingRight)
+            Turn();
+    }
+
+    private void Turn()
+    {
+        Vector3 scale = transform.localScale;
+        scale.x *= -1;
+        transform.localScale = scale;
+        
+        isFacingRight = !isFacingRight;
+    }
+
     private void OnDashInput()
     {
         lastPressedDashTime = movementData.jumpInputBufferTime;
@@ -290,23 +326,34 @@ public class PlayerController : MonoBehaviour
 
     private bool CanDash()
     {
+        return true;
         return isGrounded; //Must be grounded to dash
     }
-
-    private void Dash()
+    
+    private IEnumerator StartDash(Vector2 dir)
     {
-        bool dashingLeft = true;
-
-        float dashForce = 10f;
+        isDashing = true;
         
-        if (dashingLeft)
+        float dashMaxForce = 20f;
+        
+        float duration = 0.1f;
+        float timer = duration;
+        WaitForFixedUpdate waiter = new WaitForFixedUpdate();
+        while(timer > 0)
         {
-            rb.AddForce(Vector2.left * dashForce, ForceMode2D.Impulse);
+            float lerp = timer / duration;
+            //multiple lerp by quadratic curve to make it ease in
+            lerp = Mathf.Pow(lerp, 2);
+            
+            Vector3 newVelocity = rb.velocity;
+            newVelocity.x = dir.normalized.x * (dashMaxForce * lerp);
+            rb.velocity = newVelocity;
+            
+            timer -= Time.deltaTime;
+            yield return waiter;
         }
-        else
-        {
-            rb.AddForce(Vector2.right * dashForce, ForceMode2D.Impulse);
-        }
+
+        isDashing = false;
     }
 
     public void Bonked()
