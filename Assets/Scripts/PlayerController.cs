@@ -12,14 +12,14 @@ public class PlayerController : MonoBehaviour
     public MovementDataConfig movementDataConfig;
     public MovementData movementData;
 
-    public Transform bonkCheckPoint;
+    public BoxCollider2D bonkCheckPoint;
     
-    public Transform groundCheckPoint;
-    [HideInInspector] public Vector2 groundCheckSize = new Vector2(1f, 0.05f);
+    public BoxCollider2D groundCheckPoint;
     public LayerMask groundLayer;
 
     [Header("Particles")]
     public ParticleSystem canSquashParticles;
+    public ParticleSystem canDashSquashParticles;
     
     private Rigidbody2D rb;
 
@@ -34,6 +34,10 @@ public class PlayerController : MonoBehaviour
     private bool isDashing = false;
 
     private bool canSquash = false;
+    public bool CanSquash => canSquash;
+    
+    private bool canDashSquash = false;
+    public bool CanDashSquash => canDashSquash;
     
     //Timers
     private float lastPressedJumpTime = 0f;
@@ -41,6 +45,7 @@ public class PlayerController : MonoBehaviour
     private float lastOnGroundTime = 0f;
 
     public Vector3 lastVelocity;
+    private float fastestDownwardsVelocityWhileDiving = 0f;
     
     private void Awake()
     {
@@ -51,10 +56,14 @@ public class PlayerController : MonoBehaviour
         movementData = new MovementData(movementDataConfig);
         
         ToggleCanSquashParticles(false);
+        ToggleCanDashSquashParticles(false);
     }
     
     void Update()
     {
+        if(Time.timeScale == 0f)
+            return;
+        
         lastPressedJumpTime -= Time.deltaTime;
         lastPressedDashTime -= Time.deltaTime;
         lastOnGroundTime -= Time.deltaTime;
@@ -65,14 +74,14 @@ public class PlayerController : MonoBehaviour
         if (horizontalInput != 0)
             CheckDirectionToFace(horizontalInput > 0);
 
-        if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
-            OnJumpInput();
-
-        if (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.UpArrow))
-            OnJumpInputUp();
+        // if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+        //     OnJumpInput();
+        //
+        // if (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.UpArrow))
+        //     OnJumpInputUp();
         
 
-        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.Space))
             OnDiveInput();
         
         if(Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftShift))
@@ -81,14 +90,14 @@ public class PlayerController : MonoBehaviour
 
         if (!isJumping && !isGrounded) //If they aren't jumping and they aren't grounded, check if they've now become grounded
         {
-            if (Physics2D.OverlapBox(groundCheckPoint.position, groundCheckSize, 0, groundLayer))
+            if (Physics2D.OverlapBox(groundCheckPoint.transform.position, groundCheckPoint.size, 0, groundLayer))
             {
                 Grounded();
             }
         } 
         else if (isGrounded) //If they are grounded, check if they've become ungrounded
         {
-            if (!Physics2D.OverlapBox(groundCheckPoint.position, groundCheckSize, 0, groundLayer))
+            if (!Physics2D.OverlapBox(groundCheckPoint.transform.position, groundCheckPoint.size, 0, groundLayer))
             {
                 Ungrounded();
             }
@@ -155,11 +164,23 @@ public class PlayerController : MonoBehaviour
         {
             ToggleCanSquashParticles(false);
         }
+
+        if (!canDashSquash && Mathf.Abs(rb.velocity.x) >= movementData.velocityRequiredForDashSquashing)
+        {
+            ToggleCanDashSquashParticles(true);
+        } 
+        else if(canDashSquash && Mathf.Abs(rb.velocity.x) < movementData.velocityRequiredForDashSquashing)
+        {
+            ToggleCanDashSquashParticles(false);
+        }
     }
 
     private void LateUpdate()
     {
         lastVelocity = rb.velocity;
+        
+        if(lastVelocity.y < fastestDownwardsVelocityWhileDiving)
+            fastestDownwardsVelocityWhileDiving = lastVelocity.y;
     }
 
     private void SetGravityScale(float newGravityScale)
@@ -172,13 +193,15 @@ public class PlayerController : MonoBehaviour
     private void Grounded()
     {
         // Debug.Log("Grounded");
-        
+
         isGrounded = true;
         isJumpCut = false;
         isJumpFalling = false;
-        isDiving = false;
+        // isDiving = false;
 
         lastOnGroundTime = movementData.coyoteTimeBuffer;
+
+        Jump();
     }
 
     private void Ungrounded()
@@ -240,20 +263,51 @@ public class PlayerController : MonoBehaviour
     private void Jump()
     {
         // Debug.Log("JUMP");
+
+        bool wasDiving = isDiving;
         
         isJumping = true;
         isJumpCut = false;
         isJumpFalling = false;
         isDiving = false;
+        
+        //Debug Purposes
+        isJumpCut = true;
 
         lastPressedJumpTime = 0f;
         lastOnGroundTime = 0f;
-
+        
+        rb.velocity = new Vector2(rb.velocity.x, 0f);
         float force = movementData.jumpForce;
-        if (rb.velocity.y < 0) // In case the player has downward velocity somehow, we offset it
+        
+        if (wasDiving)
         {
-            force -= rb.velocity.y;
+            float downwardVelocity = -fastestDownwardsVelocityWhileDiving;
+
+            // Debug.Log(downwardVelocity + " is downward velocity");
+
+            float baseFallVelocity = 15f;
+            float maxFallVelocity = movementData.maxDiveSpeed;
+
+            float percentAddedForce = 0f;
+            percentAddedForce = (downwardVelocity - baseFallVelocity) / maxFallVelocity;
+            percentAddedForce = Mathf.Clamp(percentAddedForce, 0f, 1f);
+
+            // Debug.Log(percentAddedForce + " is percent?");
+            
+            float baseForce = movementData.jumpForce;
+            float maxAdditionalForce = movementData.jumpForce * 0.5f;
+
+            // force = baseForce + (maxAdditionalForce * percentAddedForce);
+            force = baseForce + maxAdditionalForce;
+
+            if (percentAddedForce > 0.25f)
+            {
+                GameController.Instance.ApplyShockwave(transform.position, percentAddedForce);
+            }
         }
+        
+        Debug.Log("Force: " + force);
         
         rb.AddForce(Vector3.up * force, ForceMode2D.Impulse);
 
@@ -264,6 +318,8 @@ public class PlayerController : MonoBehaviour
                 SetGravityScale(movementData.gravityScaleWhenJumping);
             }
         }
+
+        fastestDownwardsVelocityWhileDiving = 0f;
     }
 
     private bool CanRun()
@@ -377,6 +433,29 @@ public class PlayerController : MonoBehaviour
         {
             canSquashParticles.Stop();
         }
+    }
+
+    public void ToggleCanDashSquashParticles(bool canNowDashSquash)
+    {
+        canDashSquash = canNowDashSquash;
+        
+        if (canNowDashSquash)
+        {
+            canDashSquashParticles.Play();
+        }
+        else
+        {
+            canDashSquashParticles.Stop();
+        }
+    }
+
+    public void SquashedBrick(Brick in_brick)
+    {
+        // AddExperience(in_brick.experienceValue);
+        
+        GameController.Instance.SpawnCarrot(in_brick.transform.position);
+
+        Jump();
     }
     
     #region Experience

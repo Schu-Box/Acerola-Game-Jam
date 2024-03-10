@@ -16,6 +16,14 @@ public class GameController : MonoBehaviour
     public UpgradeButton firstUpgradeButton;
     public UpgradeButton secondUpgradeButton;
 
+    [Header("Shockwave")]
+    public Transform shockwaveHolder;
+    public GameObject shockwavePrefab;
+
+    [Header("Carrot")]
+    public Transform carrotHolder;
+    public Carrot carrotPrefab;
+
     [Header("Upgrades")]
     public List<UpgradeConfig> positiveUpgrades;
     public List<UpgradeConfig> negativeUpgrades;
@@ -119,5 +127,17 @@ public class GameController : MonoBehaviour
                 Debug.LogError("UPgrade type not found!");
                 break;
         }
+    }
+
+    public void ApplyShockwave(Vector2 in_position, float in_percentage)
+    {
+        Shockwave newShockwave = Instantiate(shockwavePrefab, shockwaveHolder).GetComponentInChildren<Shockwave>();
+        newShockwave.Spawn(in_position, in_percentage);
+    }
+
+    public void SpawnCarrot(Vector2 in_position)
+    {
+        Carrot newCarrot = Instantiate(carrotPrefab, carrotHolder);
+        newCarrot.Spawn(in_position);
     }
 }

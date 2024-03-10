@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class Brick : MonoBehaviour
 {
+    public List<Sprite> damageSpriteList;
+    public SpriteRenderer damageSpriteRenderer;
+    
     private float velocityRequiredForBonking = 3f;
 
     private Rigidbody2D rb;
@@ -12,6 +15,9 @@ public class Brick : MonoBehaviour
     private Vector3 lastVelocity;
 
     public int experienceValue = 1;
+
+    public int health = 3;
+    private int damage = 0;
 
     private bool isSetup = false;
     public void Setup()
@@ -38,7 +44,7 @@ public class Brick : MonoBehaviour
             PlayerController playerController = collision2D.gameObject.GetComponent<PlayerController>();
             
             //If it overlaps with the bonkCheckPoint, bonk the player
-            if (Physics2D.OverlapBox(playerController.bonkCheckPoint.position, playerController.groundCheckSize, 0, playerController.groundLayer))
+            if (Physics2D.OverlapBox(playerController.bonkCheckPoint.transform.position, playerController.bonkCheckPoint.size, 0, playerController.groundLayer))
             {
                 if(lastVelocity.magnitude > velocityRequiredForBonking && lastVelocity.y < 0) //If velocity is greater than the required amount and the brick is moving downwards
                 {
@@ -47,24 +53,36 @@ public class Brick : MonoBehaviour
                     playerController.Bonked();
                 }
             } 
-            else if(Physics2D.OverlapBox(playerController.groundCheckPoint.position, playerController.groundCheckSize, 0, playerController.groundLayer))
+            
+            if(Physics2D.OverlapBox(playerController.groundCheckPoint.transform.position, playerController.groundCheckPoint.size, 0, playerController.groundLayer))
             {
                 // Debug.Log("player velocity is: " + playerController.lastVelocity.y);
                 
-                if(-playerController.lastVelocity.y >= playerController.movementData.velocityRequiredForSquashing)
-                {
+                // if(playerController.CanSquash)
+                // {
                     // Debug.Log("Squashed at velocity : " + playerController.lastVelocity.y);
                     
-                    playerController.AddExperience(experienceValue);
-                    
                     Squashed();
-                }
+                // }
+            } 
+            
+            if (playerController.CanDashSquash)
+            {
+                Squashed();
             }
         }
     }
 
     public void Squashed()
     {
-        Destroy(gameObject);
+        damage++;
+
+        damageSpriteRenderer.sprite = damageSpriteList[damage];
+        
+        if (damage >= health)
+        {
+            PlayerController.Instance.SquashedBrick(this);
+            Destroy(gameObject);
+        }
     }
 }

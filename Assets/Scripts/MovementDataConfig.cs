@@ -36,6 +36,7 @@ public class MovementDataConfig : ScriptableObject
 
 	[Header("Squashing")]
 	public float velocityRequiredForSquashing = 30f;
+	public float velocityRequiredForDashSquashing = 30f;
 
 
 
@@ -161,6 +162,7 @@ public class MovementDataConfig : ScriptableObject
 	 public float maxDiveSpeed;
 
 	 public float velocityRequiredForSquashing;
+	 public float velocityRequiredForDashSquashing;
 	 
 	 public MovementData(MovementDataConfig config)
 	 {
@@ -183,5 +185,6 @@ public class MovementDataConfig : ScriptableObject
 		 maxDiveSpeed = config.maxDiveSpeed;
 		 
 		 velocityRequiredForSquashing = config.velocityRequiredForSquashing;
+		 velocityRequiredForDashSquashing = config.velocityRequiredForDashSquashing;
 	 }
  }
