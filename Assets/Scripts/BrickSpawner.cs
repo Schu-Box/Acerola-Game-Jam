@@ -14,6 +14,8 @@ public class BrickSpawner : MonoBehaviour
     private float timer = 0f;
 
     public float brickGravityScale = 1f;
+
+    public int durability = 2;
     
     void Start()
     {
@@ -36,6 +38,7 @@ public class BrickSpawner : MonoBehaviour
     {
         Vector3 randomPoint = new Vector3(Random.Range(-spawnWidth, spawnWidth), brickParent.transform.position.y, 0);
         Brick newBrick = Instantiate(brickPrefab, randomPoint, Quaternion.identity, brickParent).GetComponent<Brick>();
+        newBrick.health = durability;
 
         newBrick.Setup();
     }

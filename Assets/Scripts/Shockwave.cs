@@ -42,8 +42,6 @@ public class Shockwave : MonoBehaviour
     
     public void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("trig entered");
-        
         Brick brick = other.gameObject.GetComponent<Brick>();
         if (brick != null && !shockwavedBricks.Contains(brick))
         {

@@ -16,7 +16,6 @@ public class CarrotPickupTrigger : MonoBehaviour
 
     private void PickupCarrot()
     {
-        Debug.Log("pick up");
         PlayerController.Instance.AddExperience(experienceValue);
         Destroy(transform.parent.gameObject);
     }

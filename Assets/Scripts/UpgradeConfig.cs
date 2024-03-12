@@ -25,8 +25,20 @@ public enum UpgradeType
    
    MovementSpeed = 20,
    
+   DiveSpeed = 30,
+   
+   Weight = 40,
+   
+   CarrotSpawnRate = 50,
+
    //Debuffs
    BrickSpawnRate = 1000,
    
    BrickFallSpeed = 1010,
+   
+   BrickShockwaveRadius = 1020,
+   
+   BrickShockwaveForce = 1030,
+   
+   BrickDurability = 1040
 }

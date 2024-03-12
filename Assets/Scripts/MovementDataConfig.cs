@@ -33,6 +33,10 @@ public class MovementDataConfig : ScriptableObject
 	public float diveStartSpeedIncrease = 10f;
 	public float diveSpeedGainedPerSecond = 15f;
 	public float maxDiveSpeed = 30f;
+	
+	[Header("Dashing")]
+	public float dashMaxSpeed = 20f;
+	public float dashDuration = 0.5f;
 
 	[Header("Squashing")]
 	public float velocityRequiredForSquashing = 30f;
@@ -167,6 +171,10 @@ public class MovementDataConfig : ScriptableObject
 
 	 public float velocityRequiredForSquashing;
 	 public float velocityRequiredForDashSquashing;
+	 
+	 [Header("Dashing")]
+	 public float dashMaxSpeed;
+	 public float dashDuration;
 
 	 [Header("Shockwaves")]
 	 public float shockwaveRadius;
@@ -194,6 +202,9 @@ public class MovementDataConfig : ScriptableObject
 		 
 		 velocityRequiredForSquashing = config.velocityRequiredForSquashing;
 		 velocityRequiredForDashSquashing = config.velocityRequiredForDashSquashing;
+		 
+		 dashMaxSpeed = config.dashMaxSpeed;
+		 dashDuration = config.dashDuration;
 		 
 		 shockwaveRadius = config.shockwaveRadius;
 		 shockwaveForce = config.shockwaveForce;

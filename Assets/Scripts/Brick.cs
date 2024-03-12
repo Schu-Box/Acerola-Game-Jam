@@ -37,43 +37,47 @@ public class Brick : MonoBehaviour
         lastVelocity = rb.velocity;
     }
     
-    // public void OnCollisionEnter2D(Collision2D collision2D)
-    // {
-    //     if (collision2D.gameObject.CompareTag("Player"))
-    //     {
-    //         Debug.Log("Collided with player!");
-    //         
-    //         PlayerController playerController = collision2D.gameObject.GetComponent<PlayerController>();
-    //         
-    //         //If it overlaps with the bonkCheckPoint, bonk the player
-    //         // if (Physics2D.OverlapBox(playerController.bonkCheckPoint.transform.position, playerController.bonkCheckPoint.size, 0, playerController.groundLayer))
-    //         // {
-    //         //     if(lastVelocity.magnitude > velocityRequiredForBonking && lastVelocity.y < 0) //If velocity is greater than the required amount and the brick is moving downwards
-    //         //     {
-    //         //         Debug.Log("Bonked at velocity : " + lastVelocity.magnitude);
-    //         //
-    //         //         playerController.Bonked();
-    //         //     }
-    //         // } 
-    //         
-    //         // if(Physics2D.OverlapBox(playerController.groundCheckPoint.transform.position, playerController.groundCheckPoint.size, 0, playerController.groundLayer))
-    //         // {
-    //         //     // Debug.Log("player velocity is: " + playerController.lastVelocity.y);
-    //         //     
-    //         //     // if(playerController.CanSquash)
-    //         //     // {
-    //         //         // Debug.Log("Squashed at velocity : " + playerController.lastVelocity.y);
-    //         //         
-    //         //         Squashed();
-    //         //     // }
-    //         // } 
-    //         
-    //         if (playerController.CanDashSquash)
-    //         {
-    //             Squashed();
-    //         }
-    //     }
-    // }
+    public void OnCollisionEnter2D(Collision2D collision2D)
+    {
+        if (collision2D.gameObject.CompareTag("Player"))
+        {
+            // Debug.Log("Collided with player!");
+            
+            PlayerController playerController = collision2D.gameObject.GetComponent<PlayerController>();
+            
+            //If it overlaps with the bonkCheckPoint, bonk the player
+            // if (Physics2D.OverlapBox(playerController.bonkCheckPoint.transform.position, playerController.bonkCheckPoint.size, 0, playerController.groundLayer))
+            // {
+            //     if(lastVelocity.magnitude > velocityRequiredForBonking && lastVelocity.y < 0) //If velocity is greater than the required amount and the brick is moving downwards
+            //     {
+            //         Debug.Log("Bonked at velocity : " + lastVelocity.magnitude);
+            //
+            //         playerController.Bonked();
+            //     }
+            // } 
+            
+            // if(Physics2D.OverlapBox(playerController.groundCheckPoint.transform.position, playerController.groundCheckPoint.size, 0, playerController.groundLayer))
+            // {
+            //     // Debug.Log("player velocity is: " + playerController.lastVelocity.y);
+            //     
+            //     // if(playerController.CanSquash)
+            //     // {
+            //         // Debug.Log("Squashed at velocity : " + playerController.lastVelocity.y);
+            //         
+            //         Squashed();
+            //     // }
+            // } 
+            
+            if (playerController.CanDashSquash)
+            {
+                // Squashed();
+
+                PlayerController.Instance.CancelDash();
+                
+                GameController.Instance.ApplyShockwave(transform.position);
+            }
+        }
+    }
 
     public void Bonked()
     {
@@ -81,9 +85,9 @@ public class Brick : MonoBehaviour
         PlayerController.Instance.Bonked();
     }
 
-    public void Squashed()
+    public void Damage()
     {
-        Debug.Log("SQUASH!");
+        // Debug.Log("SQUASH!");
         
         damage++;
 
@@ -91,10 +95,15 @@ public class Brick : MonoBehaviour
         
         if (damage >= health)
         {
-            GameController.Instance.ApplyShockwave(transform.position);
-            
-            PlayerController.Instance.SquashedBrick(this);
-            Destroy(gameObject);
+            Squashed();
         }
+    }
+
+    public void Squashed()
+    {
+        GameController.Instance.ApplyShockwave(transform.position);
+            
+        PlayerController.Instance.SquashedBrick(this);
+        Destroy(gameObject);
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.Build.Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -120,12 +121,38 @@ public class GameController : MonoBehaviour
                 PlayerController.Instance.movementData.movementSpeed *= upgradeConfig.upgradeEffect.value;
                 break;
             
+            case UpgradeType.DiveSpeed:
+                PlayerController.Instance.movementData.diveStartSpeedIncrease *= upgradeConfig.upgradeEffect.value;
+                PlayerController.Instance.movementData.maxDiveSpeed *= upgradeConfig.upgradeEffect.value;
+                break;
+            
+            case UpgradeType.Weight:
+                PlayerController.Instance.rb.mass *= upgradeConfig.upgradeEffect.value;
+                break;
+            
+            case UpgradeType.CarrotSpawnRate:
+                Debug.Log("TODO: IMPLEMENT!");
+                break;
+            
+            //Bricks
             case UpgradeType.BrickSpawnRate:
                 BrickSpawner.Instance.timeBetweenSpawns /= upgradeConfig.upgradeEffect.value;
                 break;
             
             case UpgradeType.BrickFallSpeed:
                 BrickSpawner.Instance.brickGravityScale *= upgradeConfig.upgradeEffect.value;
+                break;
+            
+            case UpgradeType.BrickShockwaveRadius:
+                PlayerController.Instance.movementData.shockwaveRadius *= upgradeConfig.upgradeEffect.value;
+                break;
+            
+            case UpgradeType.BrickShockwaveForce:
+                PlayerController.Instance.movementData.shockwaveForce *= upgradeConfig.upgradeEffect.value;
+                break;
+            
+            case UpgradeType.BrickDurability:
+                BrickSpawner.Instance.durability += (int)upgradeConfig.upgradeEffect.value;
                 break;
             
             default:

@@ -5642,6 +5642,7 @@ MonoBehaviour:
   spawnWidth: 17
   timeBetweenSpawns: 1
   brickGravityScale: 1
+  durability: 2
 --- !u!1001 &687551918
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5920,9 +5921,14 @@ MonoBehaviour:
   positiveUpgrades:
   - {fileID: 11400000, guid: 21adf5d94366b4446a0a479f89aee5ab, type: 2}
   - {fileID: 11400000, guid: e4dcd71d11456d148a678d7cef4bf88b, type: 2}
+  - {fileID: 11400000, guid: 3f634e5bf96b0d843926852b77fb9f72, type: 2}
+  - {fileID: 11400000, guid: 39327a0d0214370449c2f744a0d3e105, type: 2}
   negativeUpgrades:
   - {fileID: 11400000, guid: 97c7b04618f382f43b33aa113de549bb, type: 2}
   - {fileID: 11400000, guid: c142d6e0945fe764d995deb04ccf993f, type: 2}
+  - {fileID: 11400000, guid: 7af75c687f7c7b741a041dc05c1c749e, type: 2}
+  - {fileID: 11400000, guid: 9fd3f47dd8432234595f88bc3497ab53, type: 2}
+  - {fileID: 11400000, guid: 0095aa91d9280a3458632608c3569abd, type: 2}
 --- !u!4 &904534974
 Transform:
   m_ObjectHideFlags: 0
@@ -12240,6 +12246,7 @@ MonoBehaviour:
     m_Bits: 64
   canSquashParticles: {fileID: 15935970}
   canDashSquashParticles: {fileID: 1310200705}
+  rb: {fileID: 0}
   lastVelocity: {x: 0, y: 0, z: 0}
   experienceIncreaseRatePerLevel: 2
 --- !u!4 &1922911191

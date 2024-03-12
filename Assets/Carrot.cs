@@ -57,8 +57,6 @@ public class Carrot : MonoBehaviour
     {
         if (!planted)
         {
-            Debug.Log("PLANTED!");
-
             planted = true;
 
             spriteRenderer.sprite = carrotSprite;

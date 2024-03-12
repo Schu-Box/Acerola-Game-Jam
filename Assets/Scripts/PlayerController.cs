@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
     public ParticleSystem canSquashParticles;
     public ParticleSystem canDashSquashParticles;
     
-    private Rigidbody2D rb;
+    [HideInInspector] public Rigidbody2D rb;
 
     private bool isFacingRight = true;
 
@@ -137,7 +137,7 @@ public class PlayerController : MonoBehaviour
             else
                 dashDirection = isFacingRight ? Vector2.right : Vector2.left;
 
-            StartCoroutine(StartDash(dashDirection));
+            dashCoroutine = StartCoroutine(StartDash(dashDirection));
         }
 
         if (CanRun())
@@ -166,20 +166,16 @@ public class PlayerController : MonoBehaviour
         if (!canSquash && -rb.velocity.y >= movementData.velocityRequiredForSquashing)
         {
             ToggleCanSquashParticles(true);
-        } 
-        else if (canSquash && -rb.velocity.y < movementData.velocityRequiredForSquashing)
-        {
-            ToggleCanSquashParticles(false);
         }
 
-        if (!canDashSquash && Mathf.Abs(rb.velocity.x) >= movementData.velocityRequiredForDashSquashing)
-        {
-            ToggleCanDashSquashParticles(true);
-        } 
-        else if(canDashSquash && Mathf.Abs(rb.velocity.x) < movementData.velocityRequiredForDashSquashing)
-        {
-            ToggleCanDashSquashParticles(false);
-        }
+        // if (!canDashSquash && Mathf.Abs(rb.velocity.x) >= movementData.velocityRequiredForDashSquashing)
+        // {
+        //     ToggleCanDashSquashParticles(true);
+        // } 
+        // else if(canDashSquash && Mathf.Abs(rb.velocity.x) < movementData.velocityRequiredForDashSquashing)
+        // {
+        //     ToggleCanDashSquashParticles(false);
+        // }
 
         if (isGrounded)
         {
@@ -220,7 +216,12 @@ public class PlayerController : MonoBehaviour
 
         Jump();
         
-        GameController.Instance.groundedText.text = "Grounded: true";
+        // GameController.Instance.groundedText.text = "Grounded: true";
+        
+        if (canSquash)
+        {
+            ToggleCanSquashParticles(false);
+        }
     }
 
     private void CheckForSquash()
@@ -228,7 +229,14 @@ public class PlayerController : MonoBehaviour
         Brick brickBelow = Physics2D.OverlapBox(groundCheckPoint.transform.position, groundCheckPoint.size, 0, groundLayer).GetComponent<Brick>();
         if (brickBelow != null)
         {
-            brickBelow.Squashed();
+            if (canSquash)
+            {
+                brickBelow.Squashed();
+            }
+            else
+            {
+                brickBelow.Damage();
+            }
         }
     }
 
@@ -348,7 +356,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         
-        Debug.Log("Force: " + force);
+        // Debug.Log("Force: " + force);
         
         rb.AddForce(Vector3.up * force, ForceMode2D.Impulse);
 
@@ -424,16 +432,22 @@ public class PlayerController : MonoBehaviour
     private bool CanDash()
     {
         return true;
-        return isGrounded; //Must be grounded to dash
+        // return isGrounded; //Must be grounded to dash
     }
-    
+
+    private Coroutine dashCoroutine;
     private IEnumerator StartDash(Vector2 dir)
     {
+        Debug.Log("DASH!");
+        
+        ToggleCanDashSquashParticles(true);
+        
         isDashing = true;
+        lastPressedDashTime = 0f;
         
-        float dashMaxForce = 20f;
+        float dashMaxForce = movementData.dashMaxSpeed;
         
-        float duration = 0.1f;
+        float duration = movementData.dashDuration;
         float timer = duration;
         WaitForFixedUpdate waiter = new WaitForFixedUpdate();
         while(timer > 0)
@@ -450,7 +464,21 @@ public class PlayerController : MonoBehaviour
             yield return waiter;
         }
 
-        isDashing = false;
+        CancelDash();
+    }
+
+    public void CancelDash()
+    {
+        if (dashCoroutine != null)
+        {
+            Debug.Log("CANCEL DASH!");
+            
+            isDashing = false;
+
+            StopCoroutine(dashCoroutine);
+            
+            ToggleCanDashSquashParticles(false);
+        }
     }
 
     public void Bonked()
