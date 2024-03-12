@@ -37,6 +37,10 @@ public class MovementDataConfig : ScriptableObject
 	[Header("Squashing")]
 	public float velocityRequiredForSquashing = 30f;
 	public float velocityRequiredForDashSquashing = 30f;
+	
+	[Header("Shockwaves")]
+	public float shockwaveRadius = 2f;
+	public float shockwaveForce = 100f;
 
 
 
@@ -190,5 +194,8 @@ public class MovementDataConfig : ScriptableObject
 		 
 		 velocityRequiredForSquashing = config.velocityRequiredForSquashing;
 		 velocityRequiredForDashSquashing = config.velocityRequiredForDashSquashing;
+		 
+		 shockwaveRadius = config.shockwaveRadius;
+		 shockwaveForce = config.shockwaveForce;
 	 }
  }
