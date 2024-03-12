@@ -73,25 +73,31 @@ public class Brick : MonoBehaviour
                 // Squashed();
 
                 PlayerController.Instance.CancelDash();
-                
-                GameController.Instance.ApplyShockwave(transform.position);
+
+                if (PlayerController.Instance.movementData.dashingIntoBrickCreatesShockwave)
+                {
+                    GameController.Instance.ApplyShockwave(transform.position);
+                }
             }
         }
     }
 
     public void Bonked()
     {
-        Debug.Log("BONKED!");
         PlayerController.Instance.Bonked();
     }
 
     public void Damage()
     {
-        // Debug.Log("SQUASH!");
-        
         damage++;
 
-        damageSpriteRenderer.sprite = damageSpriteList[damage];
+        Sprite damageSprite;
+        if (damage < damageSpriteList.Count)
+            damageSprite = damageSpriteList[damage];
+        else 
+            damageSprite = damageSpriteList[^1];
+        
+        damageSpriteRenderer.sprite = damageSprite;
         
         if (damage >= health)
         {

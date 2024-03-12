@@ -30,7 +30,7 @@ MonoBehaviour:
   diveSpeedGainedPerSecond: 50
   maxDiveSpeed: 40
   dashMaxSpeed: 20
-  dashDuration: 0.5
+  dashDuration: 0.35
   velocityRequiredForSquashing: 30
   velocityRequiredForDashSquashing: 10
   shockwaveRadius: 2

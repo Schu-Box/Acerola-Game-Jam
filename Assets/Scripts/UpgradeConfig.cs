@@ -29,7 +29,9 @@ public enum UpgradeType
    
    Weight = 40,
    
-   CarrotSpawnRate = 50,
+   DashSpeed = 50,
+   
+   DashCreatesShockwave = 60,
 
    //Debuffs
    BrickSpawnRate = 1000,

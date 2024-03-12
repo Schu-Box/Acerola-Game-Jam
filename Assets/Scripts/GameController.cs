@@ -33,6 +33,8 @@ public class GameController : MonoBehaviour
     [Header("Upgrades")]
     public List<UpgradeConfig> positiveUpgrades;
     public List<UpgradeConfig> negativeUpgrades;
+
+    public GameObject playerGrave;
     
     private void Awake()
     {
@@ -40,6 +42,8 @@ public class GameController : MonoBehaviour
         
         gameOverUI.SetActive(false);
         levelUpUI.SetActive(false);
+
+        playerGrave.SetActive(false);
     }
     
     void Update()
@@ -130,8 +134,12 @@ public class GameController : MonoBehaviour
                 PlayerController.Instance.rb.mass *= upgradeConfig.upgradeEffect.value;
                 break;
             
-            case UpgradeType.CarrotSpawnRate:
-                Debug.Log("TODO: IMPLEMENT!");
+            case UpgradeType.DashSpeed:
+                PlayerController.Instance.movementData.dashMaxSpeed *= upgradeConfig.upgradeEffect.value;
+                break;
+            
+            case UpgradeType.DashCreatesShockwave:
+                PlayerController.Instance.movementData.dashingIntoBrickCreatesShockwave = true;
                 break;
             
             //Bricks

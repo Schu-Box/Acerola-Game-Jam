@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
     
     private bool canDashSquash = false;
     public bool CanDashSquash => canDashSquash;
-    
+
     //Timers
     private float lastPressedJumpTime = 0f;
     private float lastPressedDiveTime = 0f;
@@ -447,6 +447,8 @@ public class PlayerController : MonoBehaviour
         
         float dashMaxForce = movementData.dashMaxSpeed;
         
+        Vector3 baseVelocity = rb.velocity;
+        
         float duration = movementData.dashDuration;
         float timer = duration;
         WaitForFixedUpdate waiter = new WaitForFixedUpdate();
@@ -455,11 +457,11 @@ public class PlayerController : MonoBehaviour
             float lerp = timer / duration;
             //multiple lerp by quadratic curve to make it ease in
             lerp = Mathf.Pow(lerp, 2);
-            
-            Vector3 newVelocity = rb.velocity;
+
+            Vector3 newVelocity = Vector3.zero;
             newVelocity.x = dir.normalized.x * (dashMaxForce * lerp);
-            rb.velocity = newVelocity;
-            
+            rb.velocity = baseVelocity + newVelocity;
+
             timer -= Time.deltaTime;
             yield return waiter;
         }
@@ -483,7 +485,8 @@ public class PlayerController : MonoBehaviour
 
     public void Bonked()
     {
-        Debug.Log("BONKED");
+        GameController.Instance.playerGrave.transform.position = transform.position;
+        GameController.Instance.playerGrave.SetActive(true);
 
         Destroy(gameObject);
 
