@@ -163,6 +163,10 @@ public class MovementDataConfig : ScriptableObject
 
 	 public float velocityRequiredForSquashing;
 	 public float velocityRequiredForDashSquashing;
+
+	 [Header("Shockwaves")]
+	 public float shockwaveRadius;
+	 public float shockwaveForce;
 	 
 	 public MovementData(MovementDataConfig config)
 	 {

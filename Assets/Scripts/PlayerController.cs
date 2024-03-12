@@ -41,6 +41,7 @@ public class PlayerController : MonoBehaviour
     
     //Timers
     private float lastPressedJumpTime = 0f;
+    private float lastPressedDiveTime = 0f;
     private float lastPressedDashTime = 0f;
     private float lastOnGroundTime = 0f;
 
@@ -65,6 +66,7 @@ public class PlayerController : MonoBehaviour
             return;
         
         lastPressedJumpTime -= Time.deltaTime;
+        lastPressedDiveTime -= Time.deltaTime;
         lastPressedDashTime -= Time.deltaTime;
         lastOnGroundTime -= Time.deltaTime;
         
@@ -117,6 +119,11 @@ public class PlayerController : MonoBehaviour
             Jump();
         }
 
+        if (CanDive() && lastPressedDiveTime > 0)
+        {
+            Dive();
+        }
+
         if (CanDash() && lastPressedDashTime > 0)
         {
             //Freeze game for split second. Adds juiciness and a bit of forgiveness over directional input
@@ -138,7 +145,7 @@ public class PlayerController : MonoBehaviour
             Run(horizontalInput);
         }
 
-        if (isJumpCut || rb.velocity.y < 0f && !isJumpFalling) //If we've reached peak of jump or cut the jump, we've started falling
+        if (rb.velocity.y < 0f && !isJumpFalling) //If we've reached peak of jump or cut the jump, we've started falling
         {
             isJumpFalling = true;
             
@@ -178,6 +185,8 @@ public class PlayerController : MonoBehaviour
         {
             CheckForBonk();
         }
+
+        GameController.Instance.jumpFallingText.text = "JumpFalling : " + isJumpFalling;
     }
 
     private void LateUpdate()
@@ -269,16 +278,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnDiveInput()
     {
-        if (CanDive())
-        {
-            // Debug.Log("DIVING");
-        
-            isDiving = true;
-            
-            Vector3 newVelocity = rb.velocity;
-            newVelocity.y = -movementData.diveStartSpeedIncrease;
-            rb.velocity = newVelocity;
-        }
+        lastPressedDiveTime = movementData.jumpInputBufferTime;
     }
 
     private bool CanDive()
@@ -289,6 +289,15 @@ public class PlayerController : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void Dive()
+    {
+        isDiving = true;
+            
+        Vector3 newVelocity = rb.velocity;
+        newVelocity.y = -movementData.diveStartSpeedIncrease;
+        rb.velocity = newVelocity;
     }
 
     private void Jump()
@@ -307,6 +316,7 @@ public class PlayerController : MonoBehaviour
 
         lastPressedJumpTime = 0f;
         lastOnGroundTime = 0f;
+        lastPressedDiveTime = 0f;
         
         rb.velocity = new Vector2(rb.velocity.x, 0f);
         float force = movementData.jumpForce;
@@ -334,7 +344,7 @@ public class PlayerController : MonoBehaviour
 
             if (percentAddedForce > 0.25f)
             {
-                GameController.Instance.ApplyShockwave(transform.position, percentAddedForce);
+                // GameController.Instance.ApplyShockwave(transform.position, percentAddedForce);
             }
         }
         

@@ -10,23 +10,26 @@ public class Shockwave : MonoBehaviour
     public Transform scaleParent; //Only effected by feedback, always between 0 and 1
     public MMF_Player spawnFeedback;
 
-    private float minShockwaveForce = 10f;
-    private float maxShockwaveForce = 100f;
-
+    // private float minShockwaveForce = 10f;
+    // private float maxShockwaveForce = 100f;
+    //
+    // private float additionalUpwardForce = 50f;
+    //
+    // private float minShockwaveRadius = 0.5f;
+    // private float maxShockwaveRadius = 2f;
+    
     private float additionalUpwardForce = 50f;
-
-    private float minShockwaveRadius = 0.5f;
-    private float maxShockwaveRadius = 2f;
     
     private List<Brick> shockwavedBricks = new List<Brick>();
 
     private float shockwavePercent = 0f;
 
-    public void Spawn(Vector3 in_position, float in_percentage)
+    public void Spawn(Vector3 in_position)
     {
-        shockwavePercent = in_percentage;
+        // shockwavePercent = in_percentage;
         
-        Vector3 shockwaveScale = Vector3.one * Mathf.Lerp(minShockwaveRadius, maxShockwaveRadius, in_percentage);
+        // Vector3 shockwaveScale = Vector3.one * Mathf.Lerp(minShockwaveRadius, maxShockwaveRadius, in_percentage);
+        Vector3 shockwaveScale = Vector3.one * PlayerController.Instance.movementData.shockwaveRadius;
         
         masterParent.position = in_position;
         masterParent.localScale = shockwaveScale;
@@ -47,7 +50,8 @@ public class Shockwave : MonoBehaviour
             shockwavedBricks.Add(brick); //Prevent double shockwaving
             Rigidbody2D rb = other.GetComponent<Rigidbody2D>();
             
-            float shockwaveForce = Mathf.Lerp(minShockwaveForce, maxShockwaveForce, shockwavePercent);
+            // float shockwaveForce = Mathf.Lerp(minShockwaveForce, maxShockwaveForce, shockwavePercent);
+            float shockwaveForce = PlayerController.Instance.movementData.shockwaveForce;
 
             Vector2 force = (rb.position - (Vector2)transform.position).normalized * shockwaveForce;
             force.y += (additionalUpwardForce * shockwavePercent);

@@ -91,7 +91,7 @@ public class Brick : MonoBehaviour
         
         if (damage >= health)
         {
-            GameController.Instance.ApplyShockwave(transform.position, 1f);
+            GameController.Instance.ApplyShockwave(transform.position);
             
             PlayerController.Instance.SquashedBrick(this);
             Destroy(gameObject);

@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
 
     [Header("Debug")]
     public TextMeshProUGUI groundedText;
+    public TextMeshProUGUI jumpFallingText;
     
     [Header("UI")]
     public GameObject gameOverUI;
@@ -133,10 +134,10 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void ApplyShockwave(Vector2 in_position, float in_percentage)
+    public void ApplyShockwave(Vector2 in_position)
     {
         Shockwave newShockwave = Instantiate(shockwavePrefab, shockwaveHolder).GetComponentInChildren<Shockwave>();
-        newShockwave.Spawn(in_position, in_percentage);
+        newShockwave.Spawn(in_position);
     }
 
     public void SpawnCarrot(Vector2 in_position)
