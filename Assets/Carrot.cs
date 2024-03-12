@@ -69,6 +69,8 @@ public class Carrot : MonoBehaviour
             {
                 child.gameObject.layer = LayerMask.NameToLayer("Carrot");
             }
+
+            rb.sharedMaterial = null;
         }
     }
 }

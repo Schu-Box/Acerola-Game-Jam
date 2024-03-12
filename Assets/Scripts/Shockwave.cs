@@ -13,7 +13,7 @@ public class Shockwave : MonoBehaviour
     private float minShockwaveForce = 10f;
     private float maxShockwaveForce = 100f;
 
-    private float additionalUpwardForce = 30f;
+    private float additionalUpwardForce = 50f;
 
     private float minShockwaveRadius = 0.5f;
     private float maxShockwaveRadius = 2f;

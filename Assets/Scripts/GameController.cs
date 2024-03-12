@@ -8,6 +8,10 @@ public class GameController : MonoBehaviour
 {
     public static GameController Instance;
 
+    [Header("Debug")]
+    public TextMeshProUGUI groundedText;
+    
+    [Header("UI")]
     public GameObject gameOverUI;
     
     public TextMeshProUGUI experienceText;

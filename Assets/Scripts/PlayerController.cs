@@ -173,6 +173,11 @@ public class PlayerController : MonoBehaviour
         {
             ToggleCanDashSquashParticles(false);
         }
+
+        if (isGrounded)
+        {
+            CheckForBonk();
+        }
     }
 
     private void LateUpdate()
@@ -201,7 +206,31 @@ public class PlayerController : MonoBehaviour
 
         lastOnGroundTime = movementData.coyoteTimeBuffer;
 
+        CheckForBonk();
+        CheckForSquash();
+
         Jump();
+        
+        GameController.Instance.groundedText.text = "Grounded: true";
+    }
+
+    private void CheckForSquash()
+    {
+        Brick brickBelow = Physics2D.OverlapBox(groundCheckPoint.transform.position, groundCheckPoint.size, 0, groundLayer).GetComponent<Brick>();
+        if (brickBelow != null)
+        {
+            brickBelow.Squashed();
+        }
+    }
+
+    private void CheckForBonk()
+    {
+        Collider2D colliderAbove = Physics2D.OverlapBox(bonkCheckPoint.transform.position, bonkCheckPoint.size, 0, groundLayer);
+        if (colliderAbove != null)
+        {
+            Brick brickAbove = colliderAbove.GetComponent<Brick>();
+            brickAbove?.Bonked();
+        }
     }
 
     private void Ungrounded()
@@ -209,6 +238,8 @@ public class PlayerController : MonoBehaviour
         // Debug.Log("Ungrounded");
         
         isGrounded = false;
+
+        GameController.Instance.groundedText.text = "Grounded: false";
     }
 
     private bool CanJump()
@@ -252,7 +283,7 @@ public class PlayerController : MonoBehaviour
 
     private bool CanDive()
     {
-        if (isJumping || isJumpFalling && !isDiving)
+        if (isJumpFalling && !isDiving)
         {
             return true;
         }

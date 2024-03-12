@@ -223,8 +223,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5937589806620733877}
-  - component: {fileID: 5937589806620733898}
   - component: {fileID: 5937589806620733899}
+  - component: {fileID: 5937589806620733898}
   m_Layer: 8
   m_Name: Carrot
   m_TagString: Untagged
@@ -250,6 +250,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5937589806620733899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5937589806620733876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f061357a226906842b04e9eb26350335, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collider2D: {fileID: 5937589806098095067}
+  carrotPickupTrigger: {fileID: 5937589805928829543}
+  rb: {fileID: 5937589806620733898}
+  spriteRenderer: {fileID: 5937589806153404272}
+  seedSprite: {fileID: 21300000, guid: 41c3fd22bbebe374f9d6d3c6591935d2, type: 3}
+  carrotSprite: {fileID: 21300000, guid: 59f3ed5d095bc694db0fdb5769b8a3b2, type: 3}
 --- !u!50 &5937589806620733898
 Rigidbody2D:
   serializedVersion: 4
@@ -271,21 +289,3 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &5937589806620733899
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5937589806620733876}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f061357a226906842b04e9eb26350335, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  collider2D: {fileID: 5937589806098095067}
-  carrotPickupTrigger: {fileID: 5937589805928829543}
-  rb: {fileID: 5937589806620733898}
-  spriteRenderer: {fileID: 5937589806153404272}
-  seedSprite: {fileID: 21300000, guid: 41c3fd22bbebe374f9d6d3c6591935d2, type: 3}
-  carrotSprite: {fileID: 21300000, guid: 59f3ed5d095bc694db0fdb5769b8a3b2, type: 3}
