@@ -16,6 +16,8 @@ public class BrickSpawner : MonoBehaviour
     public float brickGravityScale = 1f;
 
     public int durability = 2;
+
+    public GameObject particlePrefab;
     
     void Start()
     {

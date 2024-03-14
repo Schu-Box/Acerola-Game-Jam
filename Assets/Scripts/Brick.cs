@@ -7,6 +7,8 @@ public class Brick : MonoBehaviour
 {
     public List<Sprite> damageSpriteList;
     public SpriteRenderer damageSpriteRenderer;
+
+    public Transform earHolder;
     
     private float velocityRequiredForBonking = 3f;
 
@@ -16,7 +18,7 @@ public class Brick : MonoBehaviour
 
     public int experienceValue = 1;
 
-    public int health = 3;
+    public int health = 2;
     private int damage = 0;
 
     private bool isSetup = false;
@@ -84,12 +86,18 @@ public class Brick : MonoBehaviour
 
     public void Bonked()
     {
+        GameController.Instance.playerGrave.transform.SetParent(earHolder);
+        GameController.Instance.playerGrave.transform.localPosition = Vector3.zero;
+        GameController.Instance.playerGrave.SetActive(true);
+        
         PlayerController.Instance.Bonked();
     }
 
-    public void Damage()
+    public void Damage(int incomingDamage)
     {
-        damage++;
+        // Debug.Log("DAMAGE: " + incomingDamage);
+        
+        damage += incomingDamage;
 
         Sprite damageSprite;
         if (damage < damageSpriteList.Count)
@@ -107,6 +115,8 @@ public class Brick : MonoBehaviour
 
     public void Squashed()
     {
+        Instantiate(BrickSpawner.Instance.particlePrefab, transform.position, Quaternion.identity, BrickSpawner.Instance.brickParent);
+        
         GameController.Instance.ApplyShockwave(transform.position);
             
         PlayerController.Instance.SquashedBrick(this);

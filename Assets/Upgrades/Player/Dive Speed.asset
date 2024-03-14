@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1369fbee5c7ff4649abd6ffd9b76a4eb, type: 3}
   m_Name: Dive Speed
   m_EditorClassIdentifier: 
-  title: 
+  icon: {fileID: 21300000, guid: a3a32ce991ee1074e9a86852979e894c, type: 3}
   description: Increase Dive Speed
   upgradeEffect:
     type: 30
-    value: 1.2
+    value: 1.35

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1369fbee5c7ff4649abd6ffd9b76a4eb, type: 3}
   m_Name: BrickFallSpeed
   m_EditorClassIdentifier: 
-  title: 
+  icon: {fileID: 21300000, guid: 26dd593181678d644abee899c801342e, type: 3}
   description: Increase Brick Fall Speed
   upgradeEffect:
     type: 1010

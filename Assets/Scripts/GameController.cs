@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.Build.Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -113,7 +112,7 @@ public class GameController : MonoBehaviour
 
     public void ApplyUpgrade(UpgradeConfig upgradeConfig)
     {
-        Debug.Log("Applying upgrade: " + upgradeConfig.title);
+        // Debug.Log("Applying upgrade: " + upgradeConfig.title);
 
         switch (upgradeConfig.upgradeEffect.type)
         {
@@ -132,6 +131,7 @@ public class GameController : MonoBehaviour
             
             case UpgradeType.Weight:
                 PlayerController.Instance.rb.mass *= upgradeConfig.upgradeEffect.value;
+                PlayerController.Instance.movementData.damage++;
                 break;
             
             case UpgradeType.DashSpeed:

@@ -47,6 +47,8 @@ public class MovementDataConfig : ScriptableObject
 	public float shockwaveRadius = 2f;
 	public float shockwaveForce = 100f;
 
+	public int damage = 1;
+
 
 
 	// public float fastFallGravityMult = 2f;
@@ -181,6 +183,8 @@ public class MovementDataConfig : ScriptableObject
 	 [Header("Shockwaves")]
 	 public float shockwaveRadius;
 	 public float shockwaveForce;
+
+	 public int damage;
 	 
 	 public MovementData(MovementDataConfig config)
 	 {
@@ -211,5 +215,7 @@ public class MovementDataConfig : ScriptableObject
 		 
 		 shockwaveRadius = config.shockwaveRadius;
 		 shockwaveForce = config.shockwaveForce;
+		 
+		 damage = config.damage;
 	 }
  }

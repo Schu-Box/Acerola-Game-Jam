@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1369fbee5c7ff4649abd6ffd9b76a4eb, type: 3}
   m_Name: BrickShockwaveRadius
   m_EditorClassIdentifier: 
-  title: 
+  icon: {fileID: 21300000, guid: ac74886721d70174d8d2578e6aefa5c0, type: 3}
   description: Increase Brick Break Shockwave Radius
   upgradeEffect:
     type: 1020

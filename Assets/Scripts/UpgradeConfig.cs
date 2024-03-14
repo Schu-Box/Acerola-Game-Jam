@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Upgrade Config")]
 public class UpgradeConfig : ScriptableObject
 {
-   public string title;
+   public Sprite icon;
    public string description;
 
    public UpgradeEffect upgradeEffect;

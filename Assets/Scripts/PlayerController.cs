@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using MoreMountains.Feedbacks;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +22,9 @@ public class PlayerController : MonoBehaviour
     public ParticleSystem canSquashParticles;
     public ParticleSystem canDashSquashParticles;
     
+    [Header("Feedbacks")]
+    public MMF_Player jumpFeedback;
+    
     [HideInInspector] public Rigidbody2D rb;
 
     private bool isFacingRight = true;
@@ -35,6 +39,8 @@ public class PlayerController : MonoBehaviour
 
     private bool canSquash = false;
     public bool CanSquash => canSquash;
+
+    private bool hasDashedThisJump = false;
     
     private bool canDashSquash = false;
     public bool CanDashSquash => canDashSquash;
@@ -58,8 +64,12 @@ public class PlayerController : MonoBehaviour
         
         ToggleCanSquashParticles(false);
         ToggleCanDashSquashParticles(false);
+
+        // Application.targetFrameRate = 60;
     }
-    
+
+    private float horizontalInput = 0;
+
     void Update()
     {
         if(Time.timeScale == 0f)
@@ -71,7 +81,7 @@ public class PlayerController : MonoBehaviour
         lastOnGroundTime -= Time.deltaTime;
         
         #region Inputs
-        float horizontalInput = Input.GetAxis("Horizontal");
+        horizontalInput = Input.GetAxis("Horizontal");
         
         if (horizontalInput != 0)
             CheckDirectionToFace(horizontalInput > 0);
@@ -86,10 +96,10 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.Space))
             OnDiveInput();
         
-        if(Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftShift))
+        if(Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
             OnDashInput();
         #endregion
-
+       
         if (!isJumping && !isGrounded) //If they aren't jumping and they aren't grounded, check if they've now become grounded
         {
             if (Physics2D.OverlapBox(groundCheckPoint.transform.position, groundCheckPoint.size, 0, groundLayer))
@@ -140,11 +150,6 @@ public class PlayerController : MonoBehaviour
             dashCoroutine = StartCoroutine(StartDash(dashDirection));
         }
 
-        if (CanRun())
-        {
-            Run(horizontalInput);
-        }
-
         if (rb.velocity.y < 0f && !isJumpFalling) //If we've reached peak of jump or cut the jump, we've started falling
         {
             isJumpFalling = true;
@@ -183,7 +188,23 @@ public class PlayerController : MonoBehaviour
         }
 
         GameController.Instance.jumpFallingText.text = "JumpFalling : " + isJumpFalling;
+        
+        if (CanRun())
+        {
+            Run(horizontalInput);
+        }
     }
+    
+    // void FixedUpdate()
+    // {
+    //     if(Time.timeScale == 0f)
+    //         return;
+    //
+    //     if (CanRun())
+    //     {
+    //         Run(horizontalInput);
+    //     }
+    // }
 
     private void LateUpdate()
     {
@@ -211,11 +232,11 @@ public class PlayerController : MonoBehaviour
 
         lastOnGroundTime = movementData.coyoteTimeBuffer;
 
+        Jump();
+        
         CheckForBonk();
         CheckForSquash();
 
-        Jump();
-        
         // GameController.Instance.groundedText.text = "Grounded: true";
         
         if (canSquash)
@@ -235,7 +256,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                brickBelow.Damage();
+                brickBelow.Damage(movementData.damage);
             }
         }
     }
@@ -311,9 +332,12 @@ public class PlayerController : MonoBehaviour
     private void Jump()
     {
         // Debug.Log("JUMP");
+        
+        jumpFeedback.PlayFeedbacks();
 
         bool wasDiving = isDiving;
         
+        hasDashedThisJump = false;
         isJumping = true;
         isJumpCut = false;
         isJumpFalling = false;
@@ -360,7 +384,7 @@ public class PlayerController : MonoBehaviour
         
         rb.AddForce(Vector3.up * force, ForceMode2D.Impulse);
 
-        if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) //If the player is holding space bar, set their gravity to the normal scale
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) //If the player is holding space bar, set their gravity to the normal scale
         {
             if (rb.gravityScale != movementData.gravityScaleWhenJumping)
             {
@@ -431,17 +455,20 @@ public class PlayerController : MonoBehaviour
 
     private bool CanDash()
     {
+        if (hasDashedThisJump)
+        {
+            return false;
+        }
+        
         return true;
-        // return isGrounded; //Must be grounded to dash
     }
 
     private Coroutine dashCoroutine;
     private IEnumerator StartDash(Vector2 dir)
     {
-        Debug.Log("DASH!");
-        
         ToggleCanDashSquashParticles(true);
         
+        hasDashedThisJump = true;
         isDashing = true;
         lastPressedDashTime = 0f;
         
@@ -473,7 +500,7 @@ public class PlayerController : MonoBehaviour
     {
         if (dashCoroutine != null)
         {
-            Debug.Log("CANCEL DASH!");
+            // Debug.Log("CANCEL DASH!");
             
             isDashing = false;
 
@@ -485,9 +512,6 @@ public class PlayerController : MonoBehaviour
 
     public void Bonked()
     {
-        GameController.Instance.playerGrave.transform.position = transform.position;
-        GameController.Instance.playerGrave.SetActive(true);
-
         Destroy(gameObject);
 
         GameController.Instance.GameOver();
@@ -527,16 +551,19 @@ public class PlayerController : MonoBehaviour
         
         GameController.Instance.SpawnCarrot(in_brick.transform.position);
 
-        Jump();
+        // Jump();
     }
     
     #region Experience
 
     private int experience = 0;
 
+    private int timesLeveled = 0;
     private int experienceRequiredToLevelUp = 5;
-
-    public float experienceIncreaseRatePerLevel = 1.5f;
+    
+    
+    private int experienceIncreaseLow = 5;
+    private int experienceIncreaseHigh = 10;
 
     public void AddExperience(int amount)
     {
@@ -552,7 +579,16 @@ public class PlayerController : MonoBehaviour
 
     public void LevelUp()
     {
-        experienceRequiredToLevelUp = (int)(experienceRequiredToLevelUp * experienceIncreaseRatePerLevel);
+        if (timesLeveled < 3)
+        {
+            experienceRequiredToLevelUp = experience + experienceIncreaseLow;
+        }
+        else
+        {
+            experienceRequiredToLevelUp = experience + experienceIncreaseHigh;
+        }
+
+        timesLeveled++;
         
         GameController.Instance.DisplayLevelUp();
     }

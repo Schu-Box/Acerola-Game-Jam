@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1369fbee5c7ff4649abd6ffd9b76a4eb, type: 3}
   m_Name: JumpHeight
   m_EditorClassIdentifier: 
-  title: 
+  icon: {fileID: 21300000, guid: 821ef26ef09d1f749b2720f0e54c3cae, type: 3}
   description: Increase Jump Height
   upgradeEffect:
     type: 10

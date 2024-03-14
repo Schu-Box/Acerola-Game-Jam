@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1369fbee5c7ff4649abd6ffd9b76a4eb, type: 3}
   m_Name: BrickSpawnRate
   m_EditorClassIdentifier: 
-  title: 
+  icon: {fileID: 21300000, guid: 8b99c6ff06d848a4aa41aa374e27f86a, type: 3}
   description: Increase Brick Spawn Rate
   upgradeEffect:
     type: 1000

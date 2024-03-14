@@ -14,7 +14,7 @@ public class UpgradeCard : MonoBehaviour
     {
         upgradeConfig = config;
         
-        // cardImage.sprite = config.sprite;
+        cardImage.sprite = config.icon;
         cardDescription.text = config.description;
     }
 }
